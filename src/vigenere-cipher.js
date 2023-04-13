@@ -20,13 +20,61 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  
+  constructor(type) {
+    this.type = type;
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+
+  encrypt(message, key) {
+    if (!message || !key) throw new Error('Incorrect arguments!');
+    while (key.length < message.length) {
+      key += key;
+    }
+    let text = message.toUpperCase();
+    let arr = key.toUpperCase().split('');
+    let result = [];
+    let codeItem = 'A'.charCodeAt(0)
+    for (let i = 0; i < text.length; i += 1) {
+      if (text.charCodeAt(i) > 64 && text.charCodeAt(i) < 91) {
+        const current = text.charCodeAt(i) - codeItem;
+        const shift = arr[0].charCodeAt(0) - codeItem;
+        arr.shift();
+        const el = String.fromCharCode(codeItem + (current + shift) % 26);
+        result.push(el);
+      } else {
+        result.push(text[i]);
+      }
+    }
+    if (this.type === false) {
+      return result.reverse().join('');
+    }
+    return result.join('');
+  }
+
+  decrypt(message, key) {
+    if (!message || !key) throw new Error('Incorrect arguments!');
+    while (key.length < message.length) {
+      key += key;
+    }
+    let text = message.toUpperCase();
+    let arr = key.toUpperCase().split('');
+    let result = [];
+    let codeItem = 'A'.charCodeAt(0)
+    for (let i = 0; i < text.length; i += 1) {
+      if (text.charCodeAt(i) > 64 && text.charCodeAt(i) < 91) {
+        const current = text.charCodeAt(i) - codeItem;
+        const shift = arr[0].charCodeAt(0) - codeItem;
+        arr.shift();
+        const el = String.fromCharCode(codeItem + (current - shift + 26) % 26);
+        result.push(el);
+      } else {
+        result.push(text[i]);
+      }
+    }
+    if (this.type === false) {
+      return result.reverse().join('');
+    }
+    return result.join('');
   }
 }
 
